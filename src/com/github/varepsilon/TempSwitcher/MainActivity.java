@@ -18,21 +18,24 @@ package com.github.varepsilon.TempSwitcher;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 /**
  * This class provides a basic demonstration of how to write an Android
@@ -43,6 +46,7 @@ public class MainActivity extends Activity {
     
     static final private int BACK_ID = Menu.FIRST;
     static final private int CLEAR_ID = Menu.FIRST + 1;
+    static final private int ABOUT_ID = Menu.FIRST + 2;
     
     static final private int DEFAULT_HOUR = 1;
     static final private int DEFAULT_MIN = 30;
@@ -50,6 +54,7 @@ public class MainActivity extends Activity {
     private TextView mTimeDisplay;
     private Button mChangeTime;
     private Button mApply;
+    private TimePickerDialog mTimePickerDialog;
     
     private Context mContext;
 
@@ -57,6 +62,7 @@ public class MainActivity extends Activity {
     private int mMinute;
 
     static final int TIME_DIALOG_ID = 0;
+    static final int ABOUT_DIALOG_ID = 1;
     
     public MainActivity() {
     }
@@ -88,13 +94,17 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(mContext, AlarmReceiver.class);
 				PendingIntent pendingIntent = PendingIntent.getBroadcast(
-						mContext, AlarmReceiver.REQUEST_CODE, intent, 0);
+						mContext,
+						AlarmReceiver.REQUEST_CODE /*not used in Android*/,
+						intent,
+						PendingIntent.FLAG_CANCEL_CURRENT
+				);
 				AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 				alarmManager.set(AlarmManager.RTC_WAKEUP,
 						System.currentTimeMillis() + getMilliseconds(mHour, mMinute),
 						pendingIntent
 				);
-				AlarmReceiver.switchOn(mContext);
+				AlarmReceiver.switchOffSound(mContext);
 			}
 		});
         // display the current time
@@ -138,8 +148,27 @@ public class MainActivity extends Activity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case TIME_DIALOG_ID:
-            return new TimePickerDialog(this,
+            mTimePickerDialog = new TimePickerDialog(this,
                     mTimeSetListener, mHour, mMinute, true);
+            return mTimePickerDialog;
+        case ABOUT_DIALOG_ID:
+        	// All this staff for clickable links
+        	final TextView message = new TextView(this);
+        	final SpannableString s = new SpannableString(getString(R.string.about_dialog));
+        	Linkify.addLinks(s, Linkify.WEB_URLS);
+        	message.setText(s);
+        	message.setMovementMethod(LinkMovementMethod.getInstance());
+        	return new AlertDialog.Builder(this)
+        			.setTitle(R.string.about)
+        			.setCancelable(true)
+		        	.setIcon(android.R.drawable.ic_dialog_info)
+		        	.setView(message)
+		        	.setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+		        		public void onClick(DialogInterface dialog, int id) {
+		        			dialog.cancel();
+		        		}
+		        	}
+		    ).create();
         }
         return null;
     }
@@ -163,6 +192,7 @@ public class MainActivity extends Activity {
         // unique integer IDs, labels from our string resources,
         menu.add(0, BACK_ID, 0, R.string.back);
         menu.add(0, CLEAR_ID, 0, R.string.clear);
+        menu.add(0, ABOUT_ID, 0, R.string.about);
 
         return true;
     }
@@ -187,13 +217,23 @@ public class MainActivity extends Activity {
             finish();
             return true;
         case CLEAR_ID:
-            mHour = DEFAULT_HOUR;
-            mMinute = DEFAULT_MIN;
-            updateDisplay();
+        	restoreDefaults();
             return true;
+        case ABOUT_ID:
+        	showDialog(ABOUT_DIALOG_ID);
+        	return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    
+    private void restoreDefaults() {
+        mHour = DEFAULT_HOUR;
+        mMinute = DEFAULT_MIN;
+        updateDisplay();
+        if (mTimePickerDialog != null) {
+        	mTimePickerDialog.updateTime(mHour, mMinute);
+        }
     }
 
     /**
