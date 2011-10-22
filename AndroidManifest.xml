@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.varepsilon.TempSwitcher">
+
+    <!-- This package contains an application...  The 'label' is the name
+         to display to the user for the overall application, and provides
+         a default label for all following components.  The syntax here is a
+         reference to one of our string resources.-->
+    <application android:label="@string/skeleton_app">
+
+        <!-- An Activity in the application - this is something the user
+             can launch and interact with.  The "name" attribute is the
+             name of the class within your package that implements this
+             activity. -->
+        <activity android:name=".MainActivity">
+
+            <!-- An IntentFilter tells the system when it should use your
+                 activity.  This allows the user to get to your activity
+                 without someone having to explicitly know to launch your
+                 class "com.examplel.android.skeletonapp.SkeletonActivity". -->
+            <intent-filter>
+                <!-- The MAIN action describes a main entry point into an
+                     activity, without any associated data. -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <!-- This places this activity into the main app list. -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
