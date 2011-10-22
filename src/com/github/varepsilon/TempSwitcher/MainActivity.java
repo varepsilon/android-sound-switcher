@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
         switch (id) {
         case TIME_DIALOG_ID:
             return new TimePickerDialog(this,
-                    mTimeSetListener, mHour, mMinute, false);
+                    mTimeSetListener, mHour, mMinute, true);
         }
         return null;
     }
