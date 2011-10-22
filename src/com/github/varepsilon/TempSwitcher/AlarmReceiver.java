@@ -12,14 +12,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Toast.makeText(context, "Alarm worked.", Toast.LENGTH_LONG).show();	
+		switchOff(context);
 	}
 
-	public static boolean switchOffSound() {
-		return false;
+	public static void switchOn(Context context) {
+		Toast.makeText(context, R.string.start_message, Toast.LENGTH_LONG).show();
+
 	}
 	
-	public static boolean switchOnSound() {
-		return false;
+	public static void switchOff(Context context) {
+		Toast.makeText(context, "Alarm worked.", Toast.LENGTH_LONG).show();	
 	}
 }

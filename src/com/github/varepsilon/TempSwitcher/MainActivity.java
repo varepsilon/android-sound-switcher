@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
 						System.currentTimeMillis() + getMilliseconds(mHour, mMinute),
 						pendingIntent
 				);
-				Toast.makeText(mContext, "Alarm set", Toast.LENGTH_LONG).show();
+				AlarmReceiver.switchOn(mContext);
 			}
 		});
         // display the current time
