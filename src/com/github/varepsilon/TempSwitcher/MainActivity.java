@@ -17,6 +17,8 @@
 package com.github.varepsilon.TempSwitcher;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 /**
  * This class provides a basic demonstration of how to write an Android
@@ -34,29 +38,82 @@ public class MainActivity extends Activity {
     
     static final private int BACK_ID = Menu.FIRST;
     static final private int CLEAR_ID = Menu.FIRST + 1;
+    
+    static final private int DEFAULT_HOUR = 1;
+    static final private int DEFAULT_MIN = 30;
 
     private EditText mEditor;
+    
+    private TextView mTimeDisplay;
+    private Button mChangeTime;
+    private Button mApply;
+
+    private int mHour;
+    private int mMinute;
+
+    static final int TIME_DIALOG_ID = 0;
     
     public MainActivity() {
     }
 
     /** Called with the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
 
-        // Inflate our UI from its XML layout description.
-        setContentView(R.layout.skeleton_activity);
+        // capture our View elements
+        mTimeDisplay = (TextView) findViewById(R.id.timeDisplay);
+        mChangeTime = (Button) findViewById(R.id.changeTime);
+        mApply = (Button) findViewById(R.id.apply);
 
-        // Find the text editor view inside the layout, because we
-        // want to do various programmatic things with it.
-        mEditor = (EditText) findViewById(R.id.editor);
+        // add a click listener to the button
+        mChangeTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showDialog(TIME_DIALOG_ID);
+            }
+        });
+    
+        mHour = DEFAULT_HOUR;
+        mMinute = DEFAULT_MIN;
 
-        // Hook up button presses to the appropriate event handler.
-        ((Button) findViewById(R.id.back)).setOnClickListener(mBackListener);
-        ((Button) findViewById(R.id.clear)).setOnClickListener(mClearListener);
+        // display the current date
+        updateDisplay();
+    }
+    
+    // updates the time we display in the TextView
+    private void updateDisplay() {
+        mTimeDisplay.setText(
+            new StringBuilder()
+                    .append(pad(mHour)).append(":")
+                    .append(pad(mMinute)));
+    }
+
+    private static String pad(int c) {
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
+    }
+    
+    // the callback received when the user "sets" the time in the dialog
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+        new TimePickerDialog.OnTimeSetListener() {
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                mHour = hourOfDay;
+                mMinute = minute;
+                updateDisplay();
+            }
+        };
         
-        mEditor.setText(getText(R.string.main_label));
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case TIME_DIALOG_ID:
+            return new TimePickerDialog(this,
+                    mTimeSetListener, mHour, mMinute, false);
+        }
+        return null;
     }
 
     /**
