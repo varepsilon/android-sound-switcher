@@ -17,8 +17,12 @@
 package com.github.varepsilon.TempSwitcher;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 /**
  * This class provides a basic demonstration of how to write an Android
@@ -42,11 +47,11 @@ public class MainActivity extends Activity {
     static final private int DEFAULT_HOUR = 1;
     static final private int DEFAULT_MIN = 30;
 
-    private EditText mEditor;
-    
     private TextView mTimeDisplay;
     private Button mChangeTime;
     private Button mApply;
+    
+    private Context mContext;
 
     private int mHour;
     private int mMinute;
@@ -60,6 +65,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
+        
+        mHour = DEFAULT_HOUR;
+        mMinute = DEFAULT_MIN;
         setContentView(R.layout.main_activity);
 
         // capture our View elements
@@ -69,15 +78,26 @@ public class MainActivity extends Activity {
 
         // add a click listener to the button
         mChangeTime.setOnClickListener(new View.OnClickListener() {
+        	@Override
             public void onClick(View v) {
                 showDialog(TIME_DIALOG_ID);
             }
         });
-    
-        mHour = DEFAULT_HOUR;
-        mMinute = DEFAULT_MIN;
-
-        // display the current date
+        mApply.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, AlarmReceiver.class);
+				PendingIntent pendingIntent = PendingIntent.getBroadcast(
+						mContext, AlarmReceiver.REQUEST_CODE, intent, 0);
+				AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+				alarmManager.set(AlarmManager.RTC_WAKEUP,
+						System.currentTimeMillis() + getMilliseconds(mHour, mMinute),
+						pendingIntent
+				);
+				Toast.makeText(mContext, "Alarm set", Toast.LENGTH_LONG).show();
+			}
+		});
+        // display the current time
         updateDisplay();
     }
     
@@ -87,6 +107,14 @@ public class MainActivity extends Activity {
             new StringBuilder()
                     .append(pad(mHour)).append(":")
                     .append(pad(mMinute)));
+    }
+    
+    private static int getMilliseconds(int hour, int min, int sec) {
+    	return ((hour * 60 + min) * 60 + sec) * 1000;
+    }
+    
+    private static int getMilliseconds(int hour, int min) {
+    	return getMilliseconds(hour, min, 0);
     }
 
     private static String pad(int c) {
@@ -132,10 +160,9 @@ public class MainActivity extends Activity {
         super.onCreateOptionsMenu(menu);
 
         // We are going to create two menus. Note that we assign them
-        // unique integer IDs, labels from our string resources, and
-        // given them shortcuts.
-        menu.add(0, BACK_ID, 0, R.string.back).setShortcut('0', 'b');
-        menu.add(0, CLEAR_ID, 0, R.string.clear).setShortcut('1', 'c');
+        // unique integer IDs, labels from our string resources,
+        menu.add(0, BACK_ID, 0, R.string.back);
+        menu.add(0, CLEAR_ID, 0, R.string.clear);
 
         return true;
     }
@@ -146,10 +173,6 @@ public class MainActivity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        // Before showing the menu, we need to decide whether the clear
-        // item is enabled depending on whether there is text to clear.
-        menu.findItem(CLEAR_ID).setVisible(mEditor.getText().length() > 0);
 
         return true;
     }
@@ -164,7 +187,9 @@ public class MainActivity extends Activity {
             finish();
             return true;
         case CLEAR_ID:
-            mEditor.setText("");
+            mHour = DEFAULT_HOUR;
+            mMinute = DEFAULT_MIN;
+            updateDisplay();
             return true;
         }
 
@@ -180,12 +205,4 @@ public class MainActivity extends Activity {
         }
     };
 
-    /**
-     * A call-back for when the user presses the clear button.
-     */
-    OnClickListener mClearListener = new OnClickListener() {
-        public void onClick(View v) {
-            mEditor.setText("");
-        }
-    };
 }

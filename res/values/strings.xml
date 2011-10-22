@@ -19,11 +19,8 @@
 
 <resources>
     <!-- Simple strings. -->
-    <string name="skeleton_app">Skeleton App</string>
+    <string name="skeleton_app">Temp Switcher</string>
     <string name="back">Back</string>
-    <string name="clear">Clear</string>
-
-    <!-- This is a complex string containing style runs. -->
-    <string name="main_label">Hello <u>th<ignore>e</ignore>re</u>, <i>you</i> <b>Activity</b>!</string>
+    <string name="clear">Reset Default</string>
 </resources>
 
