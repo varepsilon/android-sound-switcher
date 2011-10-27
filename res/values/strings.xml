@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Simple strings. -->
-    <string name="app_name">TmpSwitcher</string>
+    <string name="app_name">SoundSwitcher</string>
     <string name="back">Quit</string>
     <string name="clear">Reset Default</string>
     <string name="about">About</string>
     <string name="start_message">Sound was switched off</string>
     <string name="finish_message">Sound was switched on again</string>
     <string name="about_dialog">This application is intended to give you a simple way to switch off
-your sound for a particular perioud of time (e.g. lecture or business meeting).
+your sound for a particular period of time (e.g. lecture or business meeting).
 \n
-For more information visit https://github.com/varepsilon/android-temp-switcher</string>
+For more information visit https://github.com/varepsilon/android-sound-switcher</string>
 </resources>
 
