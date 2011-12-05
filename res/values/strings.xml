@@ -5,8 +5,15 @@
     <string name="back">Quit</string>
     <string name="clear">Reset Default</string>
     <string name="about">About</string>
-    <string name="start_message">Sound was switched off</string>
+    <string name="set_time">Set your own time</string>
+    <string name="run">RUN</string>
+    <string name="buttons_message">Change silence time</string>
+    <string name="start">Make your phone silent!</string>
+    <string name="double_time">×2</string>
+    <string name="plus_minutes">+10min</string>
+    <string name="minus_minutes">-10min</string>
     <string name="finish_message">Sound was switched on again</string>
+    <string name="zero_time">Yes, I am able switch off sound for 0 minutes, but you can\'t see it</string>
     <string name="about_dialog">This application is intended to give you a simple way to switch off
 your sound for a particular period of time (e.g. lecture or business meeting).
 \n

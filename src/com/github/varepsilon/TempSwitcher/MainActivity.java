@@ -36,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 /**
  * This class provides a basic demonstration of how to write an Android
@@ -53,6 +54,9 @@ public class MainActivity extends Activity {
 
     private TextView mTimeDisplay;
     private Button mChangeTime;
+    private Button mDoubleTime;
+    private Button mPlus10Minutes;
+    private Button mMinus10Minutes;
     private Button mApply;
     private TimePickerDialog mTimePickerDialog;
     
@@ -80,6 +84,9 @@ public class MainActivity extends Activity {
         // capture our View elements
         mTimeDisplay = (TextView) findViewById(R.id.timeDisplay);
         mChangeTime = (Button) findViewById(R.id.changeTime);
+        mDoubleTime = (Button) findViewById(R.id.doubleTime);
+        mPlus10Minutes = (Button) findViewById(R.id.plusMins);
+        mMinus10Minutes = (Button) findViewById(R.id.minusMins);
         mApply = (Button) findViewById(R.id.apply);
 
         // add a click listener to the button
@@ -89,9 +96,46 @@ public class MainActivity extends Activity {
                 showDialog(TIME_DIALOG_ID);
             }
         });
+        mDoubleTime.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mHour *= 2;
+				mMinute *= 2;
+				mHour += mMinute / 60;
+				mMinute %= 60;
+				updateDisplay();
+			}
+		});
+        mPlus10Minutes.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mMinute += 10;
+				mHour += mMinute / 60;
+				mMinute %= 60;
+				updateDisplay();
+			}
+		});
+        mMinus10Minutes.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mHour -= 1;
+				mMinute += 60 - 10;
+				mHour += mMinute / 60;
+				mMinute %= 60;
+				if (mHour < 0) {
+					mHour = 0;
+					mMinute = 0;
+				}
+				updateDisplay();
+			}
+		});
         mApply.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (mHour == 0 && mMinute == 0) {
+					Toast.makeText(mContext, R.string.zero_time, Toast.LENGTH_SHORT).show();
+					return;
+				}
 				Intent intent = new Intent(mContext, AlarmReceiver.class);
 				PendingIntent pendingIntent = PendingIntent.getBroadcast(
 						mContext,
@@ -105,6 +149,9 @@ public class MainActivity extends Activity {
 						pendingIntent
 				);
 				AlarmReceiver.switchOffSound(mContext);
+				Toast.makeText(mContext,
+						"I will be silent within next " + mHour + " hours and " + mMinute + " minutes ;)",
+						Toast.LENGTH_LONG).show();
 			}
 		});
         // display the current time

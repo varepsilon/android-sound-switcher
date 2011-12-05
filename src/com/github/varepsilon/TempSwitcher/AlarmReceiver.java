@@ -16,15 +16,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		switchOnSound(context);
+		Toast.makeText(context, R.string.finish_message, Toast.LENGTH_LONG).show();
 	}
 
 	public static void switchOnSound(Context context) {
-		Toast.makeText(context, R.string.finish_message, Toast.LENGTH_LONG).show();
 		setRingerMode(context, AudioManager.RINGER_MODE_NORMAL);
 	}
 	
 	public static void switchOffSound(Context context) {
-		Toast.makeText(context, R.string.start_message, Toast.LENGTH_LONG).show();
 		setRingerMode(context, AudioManager.RINGER_MODE_VIBRATE);
 	}
 	

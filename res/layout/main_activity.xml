@@ -9,12 +9,44 @@
         android:gravity="center_horizontal"
         android:textSize="50sp"
         android:text=""/>
+   <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/buttons_message"/>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="horizontal">
+		<Button android:id="@+id/doubleTime"
+		    android:layout_width="0dip" 
+	        android:layout_height="wrap_content"
+	        android:layout_weight="2"
+	        android:text="@string/double_time"/>
+		<Button
+		    android:id="@+id/plusMins"
+		    android:layout_width="0dip" 
+		    android:layout_height="wrap_content"
+	        android:layout_weight="1"
+		    android:text="@string/plus_minutes" />
+		<Button
+		    android:id="@+id/minusMins"
+		    android:layout_width="0dip" 
+		    android:layout_height="wrap_content"
+	        android:layout_weight="1"
+		    android:text="@string/minus_minutes" />
+	</LinearLayout>
     <Button android:id="@+id/changeTime"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Change time"/>
+        android:text="@string/set_time"/>
+   <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/start"/>
     <Button android:id="@+id/apply"
         android:layout_width="fill_parent"
         android:layout_height="200sp"
-        android:text="RUN"/>
+        android:text="@string/run"/>
 </LinearLayout>
